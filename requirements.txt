@@ -1,0 +1,6 @@
+pyTelegramBotApi
+requests
+newsapi
+datetime
+flask
+gunicorn
