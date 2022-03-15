@@ -1,6 +1,6 @@
 import os
 import flask
-from newsapi import NewsApiClient
+import newsapi
 import requests
 import telebot
 from telebot import types
@@ -154,7 +154,7 @@ def send_welcome(message):
        
 
     # Init
-    newsapi = NewsApiClient(api_key='7a307a2a65e64d01a0675b0fbf8d1d87')
+    newsapi = newsapi.NewsApiClient(api_key='7a307a2a65e64d01a0675b0fbf8d1d87')
        
        
     for i in range(1,5):
