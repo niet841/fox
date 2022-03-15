@@ -1,4 +1,4 @@
-pyTelegramBotApi
+pyTelegramBotAPI
 requests
 newsapi
 datetime
