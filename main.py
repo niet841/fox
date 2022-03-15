@@ -90,7 +90,7 @@ def sait(call):
            
            
         keyboard = types.InlineKeyboardMarkup(row_width=3)
-        button_1 = types.InlineKeyboardButton('3дней',callback_data='3days')
+        button_1 = types.InlineKeyboardButton('3дня',callback_data='3days')
         button_2 = types.InlineKeyboardButton('7дней',callback_data='7days')
         button_3 = types.InlineKeyboardButton('За сегодня',callback_data='today')
 
@@ -173,11 +173,11 @@ def send_welcome(message):
                         urls.append(dicts['url'])
 
    # print(titles,urls)
-    if titles==[]or urls==[]:
-     bot.send_message(message.chat.id,'Извините на сегодня нет новостей')
-    else:
-         k.add(*[types.KeyboardButton(name) for name in titles])
-         bot.send_message(message.chat.id,'Выберите статью',reply_markup=k)
+    №if titles==[]or urls==[]:
+    №    bot.send_message(message.chat.id,'Извините на сегодня нет новостей')
+    №else:
+    k.add(*[types.KeyboardButton(name) for name in titles])
+    bot.send_message(message.chat.id,'Выберите статью',reply_markup=k)
         
 
     
