@@ -1,3 +1,5 @@
+import os
+from flask import Flask,request
 from newsapi import NewsApiClient
 import requests
 import telebot
@@ -9,7 +11,7 @@ start_data = datetime.today()
 result_data = start_data - timedelta(days=14)
 #print(result_data)
 
-
+server =Flask(__name__)
 Flag = True
 start_data = ''
 result_data = ''
@@ -194,5 +196,17 @@ def articles(message):
                                        
 
 
-bot.polling()
+@server.router('/'+token,methods=['POST'])
+def getMessage():
+    json_string = requests.get_data().decode('utf-8')
+    update = telebot.types.Updates.de_json(json__string)
+    bot.process_new_update([update])
+    return'!',200
+@server.route('/')
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url='https://fox-telebot.herokuapp.com/'+token)
+    return'!',200
+if__name__=='__main__':
+    server.run(host='0.0.0.0,'port=int(os.environ.get('PORT',5000)))
 
