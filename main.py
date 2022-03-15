@@ -198,10 +198,9 @@ def articles(message):
 
 @server.route('/'+token,methods=['POST'])
 def getMessage():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Updates.de_json(json_string)
-    bot.process_new_updates([update])
+    bot.process_new_updates([types.Update.de_json(flask.request.stream.read().decode('utf-8'))])
     return'!',200
+
 @server.route('/',method['GET'])
 def webhook():
     bot.remove_webhook()
