@@ -196,10 +196,10 @@ def articles(message):
                                        
 
 
-@server.router('/'+token,methods=['POST'])
+@server.route('/'+token,methods=['POST'])
 def getMessage():
-    json_string = requests.get_data().decode('utf-8')
-    update = telebot.types.Updates.de_json(json__string)
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Updates.de_json(json_string)
     bot.process_new_update([update])
     return'!',200
 @server.route('/')
@@ -208,5 +208,5 @@ def webhook():
     bot.set_webhook(url='https://fox-telebot.herokuapp.com/'+token)
     return'!',200
 if__name__=='__main__':
-    server.run(host='0.0.0.0,'port=int(os.environ.get('PORT',5000)))
+    server.run(host='0.0.0.0',port=int(os.environ.get('PORT',5000)))
 
