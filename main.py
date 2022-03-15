@@ -7,9 +7,9 @@ from telebot import types
 from datetime import datetime,timedelta
 import time
 start_data = datetime.today()
-#print(start_data)
+print(start_data)
 result_data = start_data - timedelta(days=14)
-#print(result_data)
+print(result_data)
 
 server = flask.Flask(__name__)
 Flag = True
@@ -142,7 +142,7 @@ def send_welcome(message):
         
     start_data = str(start_data).split()[0]
     result_data = str(result_data).split()[0]
-   #print(start_data,result_data)
+    print(start_data,result_data)
 
        
         
@@ -173,9 +173,9 @@ def send_welcome(message):
                         urls.append(dicts['url'])
 
    # print(titles,urls)
-    №if titles==[]or urls==[]:
-    №    bot.send_message(message.chat.id,'Извините на сегодня нет новостей')
-    №else:
+    #if titles==[]or urls==[]:
+    #    bot.send_message(message.chat.id,'Извините на сегодня нет новостей')
+    #else:
     k.add(*[types.KeyboardButton(name) for name in titles])
     bot.send_message(message.chat.id,'Выберите статью',reply_markup=k)
         
