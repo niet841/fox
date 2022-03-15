@@ -1,5 +1,5 @@
 import os
-from flask import Flask,request
+import flask
 from newsapi import NewsApiClient
 import requests
 import telebot
@@ -11,7 +11,7 @@ start_data = datetime.today()
 result_data = start_data - timedelta(days=14)
 #print(result_data)
 
-server =Flask(__name__)
+server = flask.Flask(__name__)
 Flag = True
 start_data = ''
 result_data = ''
@@ -201,7 +201,7 @@ def getMessage():
     bot.process_new_updates([types.Update.de_json(flask.request.stream.read().decode('utf-8'))])
     return'!',200
 
-@server.route('/',method['GET'])
+@server.route('/',methods=['GET'])
 def webhook():
     bot.remove_webhook()
     bot.set_webhook(url='https://fox-telebot.herokuapp.com/'+token)
