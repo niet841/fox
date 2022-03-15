@@ -202,7 +202,7 @@ def getMessage():
     update = telebot.types.Updates.de_json(json_string)
     bot.process_new_updates([update])
     return'!',200
-@server.route('/')
+@server.route('/',method['GET'])
 def webhook():
     bot.remove_webhook()
     bot.set_webhook(url='https://fox-telebot.herokuapp.com/'+token)
