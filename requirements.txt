@@ -1,6 +1,5 @@
 pyTelegramBotAPI
 requests
-newsapi-python
 datetime
 flask
 gunicorn
