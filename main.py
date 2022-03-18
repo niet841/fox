@@ -1,23 +1,16 @@
 import os
 import flask
-import newsapi
+import bs4
 import requests
 import telebot
 from telebot import types
-from datetime import datetime,timedelta
-import time
-start_data = datetime.today()
-print(start_data)
-result_data = start_data - timedelta(days=14)
-print(result_data)
+
+
 
 server = flask.Flask(__name__)
-Flag = True
-start_data = ''
-result_data = ''
-sourse = ''
-domain = ''
-lang=''
+
+teg = ''
+class_teg =''
 titles = []
 urls = []
 token = '5116869598:AAGWz33WN3NlNkkCr5EDbVB0-QDiK6IEzMQ'
@@ -43,61 +36,57 @@ def content(call):
         lang = 'ru'
         key = types.InlineKeyboardMarkup(row_width=4)
         button_1 = types.InlineKeyboardButton('lenta.ru',callback_data='lenta')
-        button_2 = types.InlineKeyboardButton('russian.rt.com',callback_data='russian')
+        button_2 = types.InlineKeyboardButton('ria.ru',callback_data='ria')
         button_3 = types.InlineKeyboardButton('rbc.ru',callback_data='rbc')
-        button_4 = types.InlineKeyboardButton('tengrynews.kz',callback_data='tengry')        
+        button_4 = types.InlineKeyboardButton('tengrinews.kz',callback_data='tengri')        
         key.add(button_1, button_2, button_3,button_4)            
         bot.send_message(call.message.chat.id,'Выберите сайты',reply_markup=key)
 
     if call.data == 'EN':
          lang = 'en'
          key = types.InlineKeyboardMarkup(row_width=3)
-         button_1 = types.InlineKeyboardButton('cnn.com',callback_data='cnn')
-         button_2 = types.InlineKeyboardButton('bbc.co.uk',callback_data='bbc')
-         button_3 = types.InlineKeyboardButton('bloomberg',callback_data='bloom')
-         button_4 = types.InlineKeyboardButton('abcnews.go.com',callback_data='news1')
-         button_5 = types.InlineKeyboardButton('fox.news',callback_data='fox')
-         button_6 = types.InlineKeyboardButton('independent.co.uk',callback_data='indep')                                      
-         key.add(button_1, button_2, button_3, button_4, button_5, button_6,)            
+         button_1 = types.InlineKeyboardButton('bbc.com',callback_data='bbc')
+         button_2 = types.InlineKeyboardButton('foxnews.com',callback_data='fox')                            
+         key.add(button_1, button_2, )            
          bot.send_message(call.message.chat.id,'Выберите сайты',reply_markup=key)
-@bot.callback_query_handler(func=lambda call: call.data == 'lenta' or call.data == 'russian' or call.data =='rbc' or call.data=='tengry'or call.data =='cnn'or
-                            call.data =='bbc'or call.data =='bloom'or call.data =='news1'or call.data =='fox'or call.data =='indep')
+
+@bot.callback_query_handler(func=lambda call: call.data == 'lenta' or call.data == 'ria' or call.data =='rbc' or call.data=='tengri'or call.data =='bbc'or
+                            call.data =='fox')
 def sait(call):
-    global sourse,Flag, titles, urls
-    titles = []
-    urls = []
-    if call.data!='tengry':
+    global sourse, teg, class_teg, titles, urls
+    titles.clear()
+    urls.clear()
+    k = types.ReplyKeyboardRemove()  
+    bot.send_message(call.message.chat.id, 'Подождите ищем..👌' ,reply_markup=k)
+    if call.data!='tengri':
         
         if call.data == 'lenta':
-           sourse = 'lenta'
-           domain = 'lenta.ru' 
-        if call.data == 'russian':   
-           sourse = 'rt'
-        if call.data == 'rbc':
-           sourse = 'rbc'
-        if call.data == 'cnn':
-           sourse = 'cnn'
-        if call.data == 'bbc':
-           sourse = 'bbc-news'
-        if call.data == 'bloom':
-           sourse = 'bloomberg'
-        if call.data == 'news1':
-           sourse = 'abc-news'
-        if call.data == 'fox':
-           sourse = 'fox-news'
-        if call.data == 'indep':
-           sourse = 'independent'
-           
-           
-        keyboard = types.InlineKeyboardMarkup(row_width=3)
-        button_1 = types.InlineKeyboardButton('3дня',callback_data='3days')
-        button_2 = types.InlineKeyboardButton('7дней',callback_data='7days')
-        button_3 = types.InlineKeyboardButton('За сегодня',callback_data='today')
+            sourse = 'https://lenta.ru/'
+            teg='a'
+            class_teg = 'card-mini'
 
-        keyboard.add(button_1,button_2,button_3)
-        bot.send_message(call.message.chat.id,'Выберите за какое время хотите узнать новости? ',reply_markup=keyboard)
+        if call.data == 'ria':   
+           sourse = 'https://ria.ru/'
+           teg='span'
+           class_teg = 'share'
+           
+        if call.data == 'rbc':
+           sourse = 'https://rbc.ru/'
+           teg='a'
+           class_teg = 'news-feed__item'
+      
+        if call.data == 'bbc':
+           sourse = 'https://bbc.com/'
+           teg='a'
+           class_teg = 'media__link'
+      
+        if call.data == 'fox':
+           sourse = 'https://foxnews.com/'
+           teg='h2'
+           class_teg = 'title'
+        send_welcome(call.message)
+        
     else:
-        Flag = False
         link = 'https://tengrinews.kz/services/analytics/api/get/widget/data'
         data = requests.get(link).json()
         k = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -109,86 +98,61 @@ def sait(call):
             
         k.add(*[types.KeyboardButton(name) for name in titles])
         bot.send_message(call.message.chat.id,'Выберите статью',reply_markup=k)       
-        articles(call.message )
+        articles(call.message)
         
-@bot.callback_query_handler(func=lambda call: call.data == '3days' or call.data == '7days' or call.data == 'today')
-
-    
-    
-
-
-def data(call):
-    global start_data,result_data
-    if call.data == '3days':
-       start_data = datetime.today()
-       result_data = start_data - timedelta(days=3)
-       
-    if call.data == '7days':   
-       start_data = datetime.today()
-       result_data = start_data - timedelta(days=7)
-    if call.data == 'today':
-       start_data = datetime.today()
-       result_data = start_data 
-    
-    send_welcome(call.message)
-        
-
 
 def send_welcome(message):
-    global sourse,lang,domain,start_data,result_data,titles,urls,Flag
+    global sourse, titles, urls, teg, class_teg
+    
     k = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+    data = requests.get(sourse)
+    soup = bs4.BeautifulSoup(data.text, 'html.parser')
+    links = soup.findAll(teg, class_=class_teg)
+
+    if sourse == 'https://lenta.ru/':
+        for i in range(0, 10):
+            href = links[i].get('href')
+            if (href.startswith('https://')):
+                urls.append(href)
+            else:
+                urls.append('https://lenta.ru'+href)
+            titles.append(links[i].text)
+    if sourse == 'https://ria.ru/':
+        for i in range(0, 10):
+            urls.append(links[i].get('data-url'))
+            titles.append(links[i].get('data-title'))
+    if sourse == 'https://rbc.ru/':
+        for i in range(0, 10):
+            urls.append(links[i].get('href'))
+            titles.append(links[i].find('span', class_='news-feed__item__title').text.strip())
+
+    if sourse == 'https://foxnews.com/':
+        for i in range(0, 10):
+            urls.append(links[i].find('a').get('href'))
+            titles.append(links[i].find('a').text)
+
+    if sourse == 'https://bbc.com/':
+        for i in range(1, 10):
+            titles.append(links[i].text.strip())
+            href = links[i].get('href')
+            if href.startswith('https://'):
+                urls.append(href)
+            else:
+                urls.append(sourse + href)
     
-    
+    print(titles, urls)
         
-    start_data = str(start_data).split()[0]
-    result_data = str(result_data).split()[0]
-    print(start_data,result_data)
-
-       
-        
-      
-    bot.send_message(message.chat.id, 'Подождите ищем..👌')      
-          
-
-        
-       
-
-    # Init
-    newsapi = newsapi.NewsApiClient(api_key='7a307a2a65e64d01a0675b0fbf8d1d87')
-       
-       
-    for i in range(1,5):
-        all_articles = newsapi.get_everything(#q=tema,
-                                                  sources = sourse,
-                                                  domains=domain,
-                                                  from_param = start_data,
-                                                  to = result_data,
-                                                  language = lang,
-                                                  sort_by ='relevancy',
-                                                  page=i)
-        
-
-        for dicts in all_articles['articles']:
-                        titles.append(dicts['title'])
-                        urls.append(dicts['url'])
-
-   # print(titles,urls)
-    #if titles==[]or urls==[]:
-    #    bot.send_message(message.chat.id,'Извините на сегодня нет новостей')
-    #else:
     k.add(*[types.KeyboardButton(name) for name in titles])
     bot.send_message(message.chat.id,'Выберите статью',reply_markup=k)
         
-
-    
    
-      
 @bot.message_handler(content_types=['text'])
 def articles(message):
     global titles,urls
     for i in range(len(titles)):
         if titles[i] == message.text:
             bot.send_message(message.chat.id,urls[i])
+    
             
 
 
